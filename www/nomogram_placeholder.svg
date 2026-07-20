@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="200" viewBox="0 0 800 200">
+  <rect width="800" height="200" fill="#f8fafc" rx="10" ry="10" stroke="#e2e8f0" stroke-width="2"/>
+  <text x="400" y="85" text-anchor="middle" font-family="Inter,sans-serif" font-size="16" fill="#94a3b8">Nomogram image not available locally.</text>
+  <text x="400" y="115" text-anchor="middle" font-family="Inter,sans-serif" font-size="13" fill="#94a3b8">Place nomogram.png in MeninMethylClass_V3/www/ to display it here.</text>
+  <text x="400" y="145" text-anchor="middle" font-family="Inter,sans-serif" font-size="12" fill="#cbd5e1">(Source: Choudhury et al, Nature Genetics 2022)</text>
+</svg>

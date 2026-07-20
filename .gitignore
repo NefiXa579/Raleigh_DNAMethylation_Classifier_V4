@@ -1,0 +1,25 @@
+# R session files
+.Rhistory
+.RData
+.Rproj.user/
+*.Rproj
+
+# Runtime logs (generated each launch)
+app_log.txt
+app_err.txt
+app_stdout.txt
+app_stderr.txt
+
+# Editor / preview tooling
+.claude/
+
+# Development scratch / debug scripts (not part of the app)
+debug_cnv.R
+debug_cnv2.R
+debug_final.R
+check_pkgs.R
+test_cnv_output.png
+www/preview_colors.html
+
+# Editor backups
+*.bak

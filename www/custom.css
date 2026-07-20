@@ -1,0 +1,428 @@
+/* ─── MeninMethylClass V3 — Clinical Light (Navy + Brass) ───────────────────── */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  --navy:      #1b2435;   /* near-black navy for primary CTAs / headings */
+  --navy-soft: #2a3650;
+  --navy-dim:  rgba(27,36,53,0.06);
+  --gold:      #a9791f;   /* muted brass accent */
+  --gold-soft: #f3ead4;   /* pastel gold fill */
+  --gold-dark: #8c631a;
+  --bg:        #faf6ee;   /* warm ivory page bg */
+  --sidebar-bg: #ffffff;
+  --card-bg:   #ffffff;
+  --border:    #e8e2d3;
+  --text:      #1f2430;
+  --muted:     #8a909c;
+}
+
+/* ── Base ──────────────────────────────────────────────────────────────────── */
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', sans-serif;
+}
+
+/* ── Top bar — logo + title, full width, pinned to the very top ────────────────── */
+.app-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  background: var(--card-bg);
+  box-shadow: 0 1px 0 var(--border), 0 1px 8px rgba(27,36,53,0.04);
+  padding: 0 1.5rem;
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--navy);
+  letter-spacing: 0.01em;
+  margin-bottom: 0;
+}
+
+.app-shell {
+  padding: 0;
+}
+.app-shell > .row {
+  margin: 0;
+}
+
+/* ── Sidebar nav (navset_pill_list) — own background, pinned while content scrolls ── */
+.app-shell > .row > div:first-child.well {
+  background: var(--sidebar-bg);
+  border: none;
+  border-right: 1px solid var(--border);
+  box-shadow: none;
+  padding: 1.5rem 1rem;
+  min-height: calc(100vh - 64px);
+  position: sticky;
+  top: 64px;
+  align-self: flex-start;
+  z-index: 10;
+}
+.app-shell > .row > div:last-child {
+  padding: 1.5rem 2rem 2rem;
+}
+.nav-pills.nav-stacked {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.nav-pills.nav-stacked > li {
+  list-style: none;
+}
+.nav-pills.nav-stacked > li > a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0.65rem 0.9rem;
+  border-radius: 8px;
+  color: var(--muted);
+  font-weight: 500;
+  font-size: 0.88rem;
+  text-decoration: none;
+  transition: background 0.15s, color 0.15s;
+}
+.nav-pills.nav-stacked > li > a:hover {
+  background: var(--navy-dim);
+  color: var(--navy);
+}
+.nav-pills.nav-stacked > li > a.active,
+.nav-pills.nav-stacked > li.active > a {
+  background: var(--navy) !important;
+  color: #fff !important;
+  font-weight: 600;
+}
+.nav-pills.nav-stacked > li > a .fa,
+.nav-pills.nav-stacked > li > a svg {
+  width: 16px;
+  text-align: center;
+}
+
+/* ── Hero banner (Classifier tab) ─────────────────────────────────────────────── */
+.hero-banner {
+  background:
+    radial-gradient(55% 70% at 0% 0%,   rgba(240,200,60,0.6),  rgba(240,200,60,0) 72%),
+    radial-gradient(55% 70% at 100% 0%, rgba(240,200,60,0.6),  rgba(240,200,60,0) 72%),
+    radial-gradient(70% 60% at 50% 0%,  rgba(255,253,236,0.65), rgba(255,253,236,0) 70%),
+    radial-gradient(120% 135% at 50% 48%, rgba(255,251,224,0.88), rgba(255,251,224,0.31) 55%, rgba(255,251,224,0) 90%),
+    linear-gradient(180deg, #FAE38C, #FFFBDD 55%, #FAE38C);
+  border-radius: 16px;
+  padding: 2.25rem 1.5rem 2rem;
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+.hero-eyebrow {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--gold-dark);
+  text-transform: uppercase;
+  margin-bottom: 0.75rem;
+}
+.hero-banner h2 {
+  font-weight: 700;
+  color: var(--navy);
+  margin-bottom: 0.9rem;
+}
+.hero-sub {
+  color: #6b5f42;
+  font-size: 0.95rem;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+/* Upload/run controls — a compact pill + button row directly on the gradient */
+.hero-action-bar {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  max-width: 700px;
+  margin: 2rem auto 0;
+}
+
+/* Pill + validation status share this column, so the status box's width
+   always matches the pill's width — not the full row (which also includes
+   the Run Classifier button). */
+.hero-pill-col {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.hero-idat-pill {
+  position: relative;
+}
+.hero-idat-pill .form-group { margin-bottom: 0; }
+.hero-idat-pill .input-group {
+  border-radius: 999px;
+  background: #fffef8;
+  box-shadow: 0 2px 10px rgba(150,120,20,0.12);
+  overflow: hidden;
+}
+/* The default "Browse..." button is hidden — the whole pill is clickable via custom.js */
+.hero-idat-pill .input-group-btn,
+.hero-idat-pill .input-group-prepend {
+  display: none !important;
+}
+.hero-idat-pill input[type="text"] {
+  border: none;
+  background: transparent;
+  border-radius: 999px;
+  padding: 0.8rem 1.25rem 0.8rem 2.6rem;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--navy);
+  cursor: pointer;
+}
+.hero-idat-pill input[type="text"]::placeholder {
+  color: var(--navy);
+  opacity: 0.85;
+}
+.hero-idat-pill-icon {
+  position: absolute;
+  left: 1.1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--muted);
+  font-size: 0.85rem;
+  pointer-events: none;
+  z-index: 2;
+}
+.hero-idat-pill .progress {
+  display: none;
+}
+
+.btn-primary.hero-run-btn {
+  flex: 0 0 auto;
+  border-radius: 999px !important;
+  padding: 0.8rem 1.4rem !important;
+  white-space: nowrap;
+}
+
+.hero-status {
+  margin: 0.9rem 0 0;
+  text-align: left;
+}
+.hero-status:empty { margin: 0; }
+
+/* ── Cards ─────────────────────────────────────────────────────────────────── */
+.card {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(27,36,53,0.05);
+  margin-bottom: 1.1rem;
+  background: var(--card-bg);
+  overflow: hidden;
+}
+.card-header {
+  background: var(--card-bg);
+  border-bottom: 1px solid var(--border);
+  font-weight: 700;
+  font-size: 0.88rem;
+  color: var(--navy);
+  padding: 0.8rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.card-body { padding: 1rem 1.1rem; }
+
+/* ── Progress bar ──────────────────────────────────────────────────────────── */
+.bg-navy { background-color: var(--gold) !important; }
+.progress { background: #eceef1; }
+.progress-bar-animated { animation: progress-bar-stripes 1s linear infinite; }
+
+/* Step list */
+.step-list {
+  background: #fbfbfc;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.7rem 0.9rem;
+}
+.step-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.82rem;
+  padding: 3px 0;
+}
+.step-icon { font-size: 0.78rem; }
+.text-navy { color: var(--navy) !important; }
+
+/* ── Badges — pastel, dark text ────────────────────────────────────────────── */
+.badge {
+  font-size: 0.76rem;
+  padding: 0.34em 0.72em;
+  border-radius: 6px;
+  font-weight: 600;
+  color: #fff !important;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+
+/* ── Results table ─────────────────────────────────────────────────────────── */
+.table { margin-bottom: 0; }
+.table th {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--muted);
+  font-weight: 700;
+  border-bottom: 1px solid var(--border) !important;
+  padding: 0.6rem 0.75rem;
+  background: #fbfbfc;
+}
+.table td {
+  vertical-align: middle;
+  font-size: 0.86rem;
+  padding: 0.6rem 0.75rem;
+  border-color: var(--border);
+}
+.table-hover tbody tr:hover { background: #f7f8fa; }
+
+/* ── File input ────────────────────────────────────────────────────────────── */
+.form-control { border-radius: 8px; border-color: var(--border); font-size: 0.86rem; }
+.form-label { font-weight: 600; font-size: 0.86rem; color: var(--text); }
+
+/* ── Buttons — primary CTA is dark navy ────────────────────────────────────── */
+.btn-primary {
+  background: var(--navy) !important;
+  border: none !important;
+  color: #fff !important;
+  border-radius: 9px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.02em;
+  box-shadow: 0 1px 3px rgba(27,36,53,0.25);
+  transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
+}
+.btn-primary:hover {
+  background: var(--navy-soft) !important;
+  box-shadow: 0 3px 10px rgba(27,36,53,0.28) !important;
+  transform: translateY(-1px);
+}
+.btn-primary:active { transform: translateY(0); }
+.btn-primary:disabled { opacity: 0.6; transform: none !important; }
+
+/* Brass accent button (secondary highlight) */
+.btn-gold {
+  background: var(--gold) !important;
+  border: none !important;
+  color: #fff !important;
+  border-radius: 9px !important;
+  font-weight: 600 !important;
+}
+.btn-gold:hover { background: var(--gold-dark) !important; }
+
+.btn-outline-navy {
+  color: var(--navy) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 7px !important;
+  font-size: 0.78rem !important;
+  font-weight: 600 !important;
+  background: var(--card-bg) !important;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+.btn-outline-navy:hover {
+  background: var(--navy) !important;
+  color: #fff !important;
+  border-color: var(--navy) !important;
+}
+
+/* ── Alerts ────────────────────────────────────────────────────────────────── */
+.alert {
+  border-radius: 8px;
+  border: none;
+  font-size: 0.83rem;
+}
+.alert-success { background: #e3f1e6; color: #2f7d40; }
+.alert-warning  { background: #f5ead0; color: #8a6d1f; }
+
+/* ── Disclaimer ────────────────────────────────────────────────────────────── */
+.disclaimer-banner {
+  background: #f5e1e0;
+  border-left: 4px solid #b5726b;
+  border-radius: 8px;
+  padding: 0.85rem 1rem;
+  font-size: 0.9rem;
+  color: #7a4642;
+}
+.disclaimer-section {
+  margin-bottom: 1.3rem;
+  padding-bottom: 1.1rem;
+  border-bottom: 1px solid var(--border);
+}
+.disclaimer-section:last-child { border-bottom: none; margin-bottom: 0; }
+.disclaimer-section h6 {
+  color: var(--navy);
+  font-weight: 700;
+  font-size: 1rem;
+  margin-bottom: 0.45rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.disclaimer-section h6 svg, .disclaimer-section h6 i {
+  color: var(--navy);
+  width: 1.1rem;
+  text-align: center;
+  flex-shrink: 0;
+}
+.disclaimer-section p, .disclaimer-section ul {
+  color: #374151;
+  font-size: 0.88rem;
+  line-height: 1.65;
+  margin-bottom: 0.4rem;
+  padding-left: calc(1.1rem + 6px);
+}
+.disclaimer-section ul {
+  list-style: none;
+  margin-top: 0;
+}
+.disclaimer-section li {
+  position: relative;
+  padding-left: 1.1em;
+  margin-bottom: 0.35rem;
+}
+.disclaimer-section li:last-child {
+  margin-bottom: 0;
+}
+.disclaimer-section li::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: var(--navy);
+  font-weight: 700;
+}
+
+/* Tab intro line (Methods, About) — align with the indented section text below it */
+.section-intro {
+  padding-left: calc(1.1rem + 6px);
+  color: #374151 !important;
+}
+
+/* ── Framed reference figure (disclaimer) ──────────────────────────────────── */
+.figure-frame {
+  width: calc(100% - (1.1rem + 6px));   /* fills the card width, minus the text indent */
+  margin: 1.4rem 0 0.4rem calc(1.1rem + 6px);  /* indented to align with the text above */
+  background: #ffffff;
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: 0 2px 12px rgba(27,58,95,0.10);
+}
+.figure-frame img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 4px;
+}
+.figure-frame .fig-cap {
+  text-align: center;
+  margin: 0.6rem 0 0;
+}
+
+/* ── Plotly tweaks ─────────────────────────────────────────────────────────── */
+.js-plotly-plot .plotly { border-radius: 0 0 8px 8px; }
