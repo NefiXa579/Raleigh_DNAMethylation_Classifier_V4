@@ -1,40 +1,105 @@
 ## global.R — loaded once per R process, shared across all sessions
+##
+## STARTUP STRATEGY
+## Only the libraries needed to *draw* the interface are loaded here, so the
+## page appears in a couple of seconds. Everything heavy (sesame, caret, the
+## reference panel, the SVM models — ~25 s in total) is loaded afterwards, in
+## chunks, by the "engine" below. The server kicks this off automatically as
+## soon as the page has been sent to the browser, so it finishes while the user
+## is still locating and uploading their IDAT files.
+##
+## NOTE: R is single-threaded, so this is not true background loading — it is
+## deferred, chunked loading. Nothing about the analysis itself changes; the
+## same libraries and data are loaded, just a few seconds later.
 
+## ── UI-critical libraries (fast — needed to render the page) ─────────────────
 library(shiny)
 library(bslib)
 library(shinyjs)
-library(sesame)
-library(sesameData)
-library(BiocManager)
-library(caret)
-library(kernlab)
-library(DNAcopy)
 library(ggplot2)
 library(plotly)
-library(GenomicRanges)
-library(IRanges)
 library(scales)
 
-options(repos = BiocManager::repositories())
 options(shiny.maxRequestSize = 100 * 1024^2)
 
 ## Models + probe lists ship with the app, in ./models (relative to the app dir).
 ## Shiny sets the working directory to the app folder while running, so this
 ## resolves correctly regardless of where the launcher is started from.
-BASE_DIR  <- "models"
-probes       <- scan(file.path(BASE_DIR, "probes.txt"),      character(), quote = "")
-probes_450k  <- scan(file.path(BASE_DIR, "probes_450K.txt"), character(), quote = "")
-probes_v2    <- scan(file.path(BASE_DIR, "probes_EPICv2.txt"), character(), quote = "")
+BASE_DIR <- "models"
 
-sesameDataCache()
-sdfs.normal      <- sesameDataGet("EPIC.5.SigDF.normal")
+## ── Analysis engine: deferred, chunked loading ──────────────────────────────
+.engine <- new.env(parent = emptyenv())
+.engine$done  <- 0L
+.engine$ready <- FALSE
 
-svm_3g_EPIC      <- readRDS(file.path(BASE_DIR, "sesame_classifier.rds"))
-svm_4g_EPIC      <- readRDS(file.path(BASE_DIR, "sesame_classifier_four.rds"))
-svm_3g_450K      <- readRDS(file.path(BASE_DIR, "svm_Linear_450K.rds"))
-svm_4g_450K      <- readRDS(file.path(BASE_DIR, "svm_Linear_450K_4groups.rds"))
-svm_3g_EPICv2    <- readRDS(file.path(BASE_DIR, "svm_linear_EPICv2.rds"))
-svm_4g_EPICv2    <- readRDS(file.path(BASE_DIR, "svm_Linear_EPICv2_4groups.rds"))
+## Each step is one chunk of work. They run one per tick, so the app can
+## respond to the browser in between. Objects are assigned into the global
+## environment, exactly where the original code expected to find them.
+ENGINE_STEPS <- list(
+  list(label = "Loading methylation toolkit", fn = function() {
+    suppressMessages({ library(sesame); library(sesameData) })
+  }),
+  list(label = "Loading classifier libraries", fn = function() {
+    suppressMessages({ library(caret); library(kernlab) })
+  }),
+  list(label = "Loading genomics libraries", fn = function() {
+    suppressMessages({
+      library(DNAcopy); library(GenomicRanges); library(IRanges); library(BiocManager)
+    })
+    options(repos = BiocManager::repositories())
+  }),
+  list(label = "Reading probe lists", fn = function() {
+    g <- globalenv()
+    assign("probes",      scan(file.path(BASE_DIR, "probes.txt"),       character(), quote = "", quiet = TRUE), envir = g)
+    assign("probes_450k", scan(file.path(BASE_DIR, "probes_450K.txt"),  character(), quote = "", quiet = TRUE), envir = g)
+    assign("probes_v2",   scan(file.path(BASE_DIR, "probes_EPICv2.txt"),character(), quote = "", quiet = TRUE), envir = g)
+  }),
+  list(label = "Preparing reference data", fn = function() {
+    sesameDataCache()
+  }),
+  list(label = "Loading normal reference panel", fn = function() {
+    assign("sdfs.normal", sesameDataGet("EPIC.5.SigDF.normal"), envir = globalenv())
+  }),
+  list(label = "Loading classification models", fn = function() {
+    g <- globalenv()
+    assign("svm_3g_EPIC",   readRDS(file.path(BASE_DIR, "sesame_classifier.rds")),             envir = g)
+    assign("svm_4g_EPIC",   readRDS(file.path(BASE_DIR, "sesame_classifier_four.rds")),        envir = g)
+    assign("svm_3g_450K",   readRDS(file.path(BASE_DIR, "svm_Linear_450K.rds")),               envir = g)
+    assign("svm_4g_450K",   readRDS(file.path(BASE_DIR, "svm_Linear_450K_4groups.rds")),       envir = g)
+    assign("svm_3g_EPICv2", readRDS(file.path(BASE_DIR, "svm_linear_EPICv2.rds")),             envir = g)
+    assign("svm_4g_EPICv2", readRDS(file.path(BASE_DIR, "svm_Linear_EPICv2_4groups.rds")),     envir = g)
+  })
+)
+
+engine_total <- function() length(ENGINE_STEPS)
+engine_ready <- function() isTRUE(.engine$ready)
+
+## Runs the next pending chunk. Returns TRUE if work was done.
+engine_run_next <- function() {
+  i <- .engine$done + 1L
+  if (i > length(ENGINE_STEPS)) { .engine$ready <- TRUE; return(FALSE) }
+  ENGINE_STEPS[[i]]$fn()
+  .engine$done <- i
+  if (.engine$done >= length(ENGINE_STEPS)) .engine$ready <- TRUE
+  TRUE
+}
+
+## Current progress + the label of whatever comes next.
+engine_progress <- function() {
+  n <- length(ENGINE_STEPS)
+  list(
+    done  = .engine$done,
+    total = n,
+    label = if (.engine$done < n) ENGINE_STEPS[[.engine$done + 1L]]$label else "Ready"
+  )
+}
+
+## Blocking fallback: guarantees the engine is fully loaded before analysis,
+## in case the user clicks Run before background loading has finished.
+engine_ensure_loaded <- function() {
+  while (!engine_ready()) engine_run_next()
+  invisible(TRUE)
+}
 
 ## ── Optimized leftRightMerge1 ────────────────────────────────────────────────
 ## Original was O(n²) due to dataframe copy on every iteration.

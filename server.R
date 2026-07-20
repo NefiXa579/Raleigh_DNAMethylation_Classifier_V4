@@ -5,6 +5,61 @@ server <- function(input, output, session) {
   results_list <- reactiveVal(list())
   step_status  <- reactiveVal(list())
 
+  ## ── Analysis engine: deferred background loading ────────────────────────────
+  ## The page is rendered first; the heavy libraries/models then load in chunks
+  ## so the user sees the interface immediately instead of a blank screen.
+  ## Only the first visitor pays this cost — it is shared across sessions.
+  engine_state <- reactiveVal(
+    if (engine_ready())
+      list(done = engine_total(), total = engine_total(), label = "Ready", ready = TRUE)
+    else
+      list(done = 0L, total = engine_total(), label = "Starting", ready = FALSE)
+  )
+
+  ## Run stays disabled until the engine is ready
+  if (!engine_ready()) shinyjs::disable("go_btn")
+
+  ## onFlushed(once) fires *after* the first page has been sent to the browser,
+  ## so this loading never delays the initial render.
+  session$onFlushed(function() {
+    observe({
+      if (engine_ready()) {
+        engine_state(list(done = engine_total(), total = engine_total(),
+                          label = "Ready", ready = TRUE))
+        shinyjs::enable("go_btn")
+        return(invisible(NULL))   # no dependencies -> observer stops here
+      }
+      invalidateLater(120)
+      isolate({
+        engine_run_next()
+        p <- engine_progress()
+        engine_state(list(done = p$done, total = p$total,
+                          label = p$label, ready = engine_ready()))
+      })
+    })
+  }, once = TRUE)
+
+  ## Status indicator — hidden once ready
+  output$engine_status_ui <- renderUI({
+    st <- engine_state()
+    if (isTRUE(st$ready)) return(NULL)
+    pct <- round(100 * st$done / max(st$total, 1))
+    tags$div(
+      class = "engine-status",
+      tags$div(class = "progress", style = "height:6px; border-radius:4px;",
+        tags$div(class = "progress-bar progress-bar-striped progress-bar-animated",
+                 role = "progressbar",
+                 style = paste0("width:", pct, "%; transition:width .3s ease;"))
+      ),
+      tags$div(
+        class = "engine-status-label small",
+        tags$span(class = "spinner-border spinner-border-sm me-1"),
+        sprintf("Preparing analysis engine (%d/%d) — %s",
+                st$done, st$total, st$label)
+      )
+    )
+  })
+
   ## ── Pair detection ───────────────────────────────────────────────────────────
   matched_pairs <- reactive({
     req(input$idat_files)
@@ -111,6 +166,16 @@ server <- function(input, output, session) {
     n_pairs <- length(p_data$matched)
     disable("go_btn")
     results_list(list())
+
+    ## Safety net: if the user got here before background loading finished,
+    ## finish it now (blocking) so the analysis always has what it needs.
+    if (!engine_ready()) {
+      withProgress(message = "Preparing analysis engine...", value = 0, {
+        engine_ensure_loaded()
+      })
+      engine_state(list(done = engine_total(), total = engine_total(),
+                        label = "Ready", ready = TRUE))
+    }
 
     all_results <- vector("list", n_pairs)
 

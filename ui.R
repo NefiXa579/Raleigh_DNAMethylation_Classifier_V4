@@ -67,6 +67,7 @@ ui <- page(
 
               ## Validation message + progress steps — hidden until relevant
               tags$div(class = "hero-status",
+                uiOutput("engine_status_ui"),
                 uiOutput("pair_validation_ui"),
                 uiOutput("progress_ui")
               )

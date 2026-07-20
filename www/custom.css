@@ -424,5 +424,16 @@ body {
   margin: 0.6rem 0 0;
 }
 
+/* ── Engine loading indicator (startup) ────────────────────────────────────── */
+.engine-status { margin-bottom: 0.6rem; }
+.engine-status .engine-status-label {
+  display: flex;
+  align-items: center;
+  margin-top: 0.35rem;
+  opacity: 0.85;
+  font-size: 0.8rem;
+}
+.engine-status .spinner-border-sm { width: 0.8rem; height: 0.8rem; border-width: 0.14em; }
+
 /* ── Plotly tweaks ─────────────────────────────────────────────────────────── */
 .js-plotly-plot .plotly { border-radius: 0 0 8px 8px; }
