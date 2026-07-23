@@ -279,10 +279,16 @@ ui <- page(
                           "CNV analysis cut from ~37 s to ~19 s for the first sample and ~12 s for each
                            subsequent sample in a batch, by replacing per-element loops with vectorised
                            operations (removing ~21 s) and caching the platform-constant reference data
-                           loaded once per session (~8 s saved per later sample)."),
-                  tags$li(tags$strong("Verified identical results — "),
-                          "the optimised pipeline was confirmed to produce bit-for-bit identical
-                           classification and copy-number output to the original.")
+                           loaded once per session (~8 s saved per later sample).")
+                )
+              ),
+
+              tags$div(class = "disclaimer-section",
+                tags$h6(icon("envelope"), "  Contact"),
+                tags$p("For questions about this tool, please contact:"),
+                tags$p(
+                  tags$strong("David Raleigh, MD PhD"), tags$br(),
+                  "david.raleigh@ucsf.edu"
                 )
               ),
 
@@ -301,6 +307,19 @@ ui <- page(
             )
           ),
           tags$div()
+        )
+      ),
+
+      ## ── Sidebar footer: partner logos (pinned to bottom via CSS) ───────────
+      nav_item(
+        tags$div(
+          class = "sidebar-logos",
+          tags$a(href = "https://raleighlab.ucsf.edu", target = "_blank", rel = "noopener",
+                 img(src = "raleigh_lab_logo.png", alt = "Raleigh Lab",
+                     class = "sidebar-logo")),
+          tags$a(href = "https://braintumorcenter.ucsf.edu", target = "_blank", rel = "noopener",
+                 img(src = "Brain_Tumor_Center_logo.svg", alt = "UCSF Brain Tumor Center",
+                     class = "sidebar-logo"))
         )
       )
     )

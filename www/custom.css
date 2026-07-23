@@ -101,6 +101,79 @@ body {
   text-align: center;
 }
 
+/* ── Sidebar footer logos (pinned to bottom, side by side) ─────────────────── */
+.nav-pills.nav-stacked { min-height: calc(100vh - 64px - 3rem); }
+.nav-pills.nav-stacked > li:has(.sidebar-logos) {
+  margin-top: auto;           /* pushes the logos to the bottom */
+  list-style: none;
+}
+.sidebar-logos {
+  display: flex;
+  flex-direction: row;        /* both logos on one line */
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding-top: 1rem;
+  margin-top: 0.5rem;
+  border-top: 1px solid var(--border);
+}
+.sidebar-logos a { display: block; line-height: 0; }
+/* Each logo capped by width AND height so they always fit next to each other;
+   the height cap shrinks the squarer Raleigh logo more, keeping them balanced. */
+.sidebar-logo {
+  max-width: 48%;
+  max-height: 34px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  opacity: 0.88;
+  transition: opacity 0.15s ease;
+}
+.sidebar-logos a:hover .sidebar-logo { opacity: 1; }
+
+/* ── Sidebar + content: force a real flex row so they never overlap/overflow ── */
+/* The Bootstrap columns (.col-sm-2 / .col-sm-10) carry fixed percentage widths.
+   We force the row to be a flex container and override those: the sidebar takes
+   a fixed width band, the content fills the rest (flex-basis 0 so it ignores its
+   content's natural width and never pushes past the viewport). */
+.app-shell > .row {
+  display: flex !important;
+  flex-wrap: nowrap;
+  align-items: flex-start;
+}
+.app-shell > .row > div:first-child.well {
+  flex: 0 0 auto;
+  width: auto;
+  min-width: 190px;           /* fits the icon + "Disclaimer" + padding */
+  max-width: 240px;
+}
+.app-shell > .row > div:last-child {
+  flex: 1 1 0;                /* basis 0: fill leftover space, never overflow */
+  width: auto;
+  min-width: 0;               /* allow it to shrink below its content width */
+}
+.nav-pills.nav-stacked > li > a {
+  white-space: nowrap;        /* tab labels never wrap or clip */
+}
+
+/* ── Hero banner stays inside its column when the window is narrow ─────────── */
+/* No flex-wrap: the pill + button only ever stack via the breakpoint below,
+   never a half-wrapped in-between state. */
+.hero-banner { overflow-wrap: break-word; }
+@media (max-width: 820px) {
+  .hero-banner   { padding: 1.75rem 1.1rem 1.5rem; }
+  .hero-banner h2 { font-size: 1.55rem; }
+  /* Stack the controls and make BOTH span the full hero width, tracking the
+     window size, the moment the Run button drops below the upload bar. */
+  .hero-action-bar { flex-direction: column; align-items: stretch; }
+  .hero-pill-col   { width: 100%; }
+  .hero-idat-pill,
+  .hero-idat-pill .form-group,
+  .hero-idat-pill .input-group,
+  .hero-idat-pill input[type="text"] { width: 100% !important; }
+  .btn-primary.hero-run-btn { width: 100%; }
+}
+
 /* ── Hero banner (Classifier tab) ─────────────────────────────────────────────── */
 .hero-banner {
   background:
