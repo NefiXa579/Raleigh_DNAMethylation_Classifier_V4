@@ -5097,13 +5097,13 @@
       "checksum": "12d14791ef8efef4af3aca29b7581bc8"
     },
     "ui.R": {
-      "checksum": "3acf9fc4c5cf441b54f94b13ca51fc38"
+      "checksum": "b144d6d012c791e6a2e7e980d78918a3"
+    },
+    "www/Brain_Tumor_Center_logo.svg": {
+      "checksum": "b115b012b6086172db75fe1e5f27de1b"
     },
     "www/custom.css": {
-      "checksum": "d511c5bb20ea889f4598d28782bec4a0"
-    },
-    "www/custom.css.bak": {
-      "checksum": "0bf37a1e4690e1976ed9bc659b6fe953"
+      "checksum": "bd5cedb1dbda2f84b8ab915988ddb397"
     },
     "www/custom.js": {
       "checksum": "72e49e89054a2b3016c31d80be74b2c2"
@@ -5120,8 +5120,8 @@
     "www/nomogram_static_paper_image.png": {
       "checksum": "4b359742d0305b8b909a14ccebf233ca"
     },
-    "www/preview_colors.html": {
-      "checksum": "46508e64085bb2e8eacc93efde0e18f9"
+    "www/raleigh_lab_logo.png": {
+      "checksum": "695c033b59d36359be81dea6eeda330a"
     }
   },
   "users": null
