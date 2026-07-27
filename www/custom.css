@@ -113,23 +113,28 @@ body {
   align-items: center;
   justify-content: space-between;
   gap: 10px;
-  padding-top: 1rem;
+  padding-top: 0.8rem;        /* line sits just above the logos */
   margin-top: 0.5rem;
   border-top: 1px solid var(--border);
 }
-.sidebar-logos a { display: block; line-height: 0; }
-/* Each logo capped by width AND height so they always fit next to each other;
-   the height cap shrinks the squarer Raleigh logo more, keeping them balanced. */
-.sidebar-logo {
-  max-width: 48%;
-  max-height: 34px;
-  width: auto;
-  height: auto;
-  object-fit: contain;
+/* Size the LINK wrappers to a definite % of the sidebar (the flex container has
+   a real width), then let each image fill its wrapper. Sizing the <img> by % is
+   unreliable because its <a> parent has no fixed width. Brain Tumor Center (left)
+   is the larger, primary mark; Raleigh (right) is smaller. */
+.sidebar-logos a {
+  display: block;
+  line-height: 0;
   opacity: 0.88;
   transition: opacity 0.15s ease;
 }
-.sidebar-logos a:hover .sidebar-logo { opacity: 1; }
+.sidebar-logos a:hover { opacity: 1; }
+.sidebar-logo-link-btc     { width: 62%; }
+.sidebar-logo-link-raleigh { width: 25.5%; }  /* ~15% smaller than before */
+.sidebar-logo {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
 
 /* ── Sidebar + content: force a real flex row so they never overlap/overflow ── */
 /* The Bootstrap columns (.col-sm-2 / .col-sm-10) carry fixed percentage widths.

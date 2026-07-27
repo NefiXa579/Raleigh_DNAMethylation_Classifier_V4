@@ -118,21 +118,6 @@ ui <- page(
 
               ## Section 1
               tags$div(class = "disclaimer-section",
-                tags$h6(icon("flask"), "  Scientific Basis"),
-                tags$p("This classifier is based on research by the University of California, San Francisco (UCSF).
-                  Full reference: ",
-                  tags$a("Choudhury et al, Nature Genetics, January 2022",
-                         href="https://doi.org/10.1101/2020.11.23.20237495", target="_blank"), "."),
-                tags$div(class = "figure-frame",
-                  img(src = "nomogram_static_paper_image.png"),
-                  tags$p(class = "text-muted small fst-italic fig-cap",
-                    "Nomogram and Kaplan-Meier curves for local freedom from recurrence,
-                     reproduced from Choudhury et al, Nature Genetics 2022.")
-                )
-              ),
-
-              ## Section 2
-              tags$div(class = "disclaimer-section",
                 tags$h6(icon("scale-balanced"), "  License"),
                 tags$p("Distributed under ",
                   tags$a("CC BY-NC 3.0", href="https://creativecommons.org/licenses/by-nc/3.0/", target="_blank"),
@@ -265,6 +250,19 @@ ui <- page(
               ),
 
               tags$div(class = "disclaimer-section",
+                tags$h6(icon("flask"), "  Scientific Basis"),
+                tags$p("This classifier is based on research by the University of California, San Francisco (UCSF).
+                  Full reference: ",
+                  tags$a("Choudhury et al, Nature Genetics, January 2022",
+                         href="https://doi.org/10.1101/2020.11.23.20237495", target="_blank"), "."),
+                tags$div(class = "figure-frame",
+                  img(src = "nomogram_static_paper_image.png"),
+                  tags$p(class = "text-muted small fst-italic fig-cap",
+                    "Nomogram and Kaplan-Meier curves for local freedom from recurrence.")
+                )
+              ),
+
+              tags$div(class = "disclaimer-section",
                 tags$h6(icon("lightbulb"), "  Development"),
                 tags$p(HTML("This version (V3) was developed by <a href=\"https://www.linkedin.com/in/nefeli-chanoutsi/\" target=\"_blank\" style=\"font-weight:700;\">Nefeli Chanoutsi</a>, building on the original classifier by William C. Chen, MD.")),
                 tags$p("Improvements in this version, measured against the original pipeline:"),
@@ -293,12 +291,6 @@ ui <- page(
               ),
 
               tags$div(class = "disclaimer-section",
-                tags$h6(icon("book-open"), "  Original publication"),
-                tags$p(tags$a("Choudhury et al, Nature Genetics, 2022",
-                              href="https://doi.org/10.1101/2020.11.23.20237495", target="_blank"))
-              ),
-
-              tags$div(class = "disclaimer-section",
                 tags$h6(icon("link"), "  Original app"),
                 tags$p(tags$a("william-c-chen.shinyapps.io/MeninMethylClass_V2_450K_added",
                               href="https://william-c-chen.shinyapps.io/MeninMethylClass_V2_450K_added/",
@@ -314,11 +306,13 @@ ui <- page(
       nav_item(
         tags$div(
           class = "sidebar-logos",
-          tags$a(href = "https://raleighlab.ucsf.edu", target = "_blank", rel = "noopener",
-                 img(src = "raleigh_lab_logo.png", alt = "Raleigh Lab",
-                     class = "sidebar-logo")),
           tags$a(href = "https://braintumorcenter.ucsf.edu", target = "_blank", rel = "noopener",
+                 class = "sidebar-logo-link sidebar-logo-link-btc",
                  img(src = "Brain_Tumor_Center_logo.svg", alt = "UCSF Brain Tumor Center",
+                     class = "sidebar-logo")),
+          tags$a(href = "https://raleighlab.ucsf.edu", target = "_blank", rel = "noopener",
+                 class = "sidebar-logo-link sidebar-logo-link-raleigh",
+                 img(src = "raleigh_lab_logo.png", alt = "Raleigh Lab",
                      class = "sidebar-logo"))
         )
       )
